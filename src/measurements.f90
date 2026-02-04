@@ -1,0 +1,56 @@
+module measurements
+  use iso_fortran_env, only : dp => real64, i32 => int32
+  use parameters
+  use arrays
+  use functions
+  use statistics
+  implicit none
+
+contains
+
+  subroutine thermalize(m0,montecarlos)
+  real(dp), intent(in) :: m0
+  integer(i32),intent(in) :: montecarlos
+  integer(i32) :: i
+  open(10, file = 'data/history.dat', status = 'replace')
+  !call hot_start(phi,hotphi)
+  call cold_start(phi)
+  do i=1,thermalization
+    !write(10,*) i, action(m0,phi)/real(L**4,dp)
+    call cycles(m0,phi,montecarlos)
+  end do
+  close(10)
+  end subroutine thermalize
+
+  subroutine acceptance_rate(mi,mf,Nps)
+  real(dp), intent(in) :: mi,mf
+  integer(i32), intent(in) :: Nps
+  integer(i32) :: i0,i,j,k
+  real(dp) :: m0,AR,ARR(Nmsrs2),AR_ave,AR_err
+  real(dp) :: magnet(Nmsrs2),magnet_ave,magnet_err
+  open(20, file = 'data/magnet.dat', status = 'replace')
+  do i0=1,Nps
+    m0=mi+(mf-mi)*real(i0-1,dp)/real(Nps-1)
+    call thermalize(m0,1)
+    ARR=0._dp
+    magnet=0._dp
+    do i=1,Nmsrs2
+      do j=1,Nmsrs
+        do k=1,eachsweep
+          call montecarlo(m0,dphi,phi,AR)
+        end do
+        ARR(i)=ARR(i)+AR
+        magnet(i)=magnet(i)+abs(mean(phi))
+      end do
+    end do
+    ARR(:)=ARR(:)/real(Nmsrs,dp)
+    magnet(:)=magnet(:)/real(Nmsrs,dp)
+    call mean_scalar(ARR,AR_ave,AR_err)
+    call mean_scalar(magnet,magnet_ave,magnet_err)
+    write(*,*) m0, AR_ave, AR_err
+    write(20,*) m0, magnet_ave/real(L**4,dp), magnet_err/real(L**4,dp)
+  end do
+  close(20)
+  end subroutine acceptance_rate
+
+end module measurements
