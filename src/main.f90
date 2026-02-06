@@ -8,6 +8,7 @@ program main
   use measurements
   implicit none
 
+  call read_input()
   call cpu_time(starting)
   call init_vecs()
   !call thermalize(-2._dp,1)

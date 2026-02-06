@@ -14,4 +14,4 @@ done
 
 $FC $BIN/*.o -o $BIN/$TARGET
 
-(echo 4) |$BIN/$TARGET
+(echo parameters.dat) |$BIN/$TARGET

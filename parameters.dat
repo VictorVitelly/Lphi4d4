@@ -1,0 +1,6 @@
+&input_parameters
+L = 10,
+thermalization = 5000,
+eachsweep = 100,
+lamb0 = 1,
+/
