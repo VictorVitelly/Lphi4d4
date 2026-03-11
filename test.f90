@@ -115,6 +115,17 @@ subroutine cluster(phi)
       end do
     end do
 
+    do i1=1,L
+      do i2=1,L
+        do i3=1,L
+          do i4=1,L
+            write(*,*) 'El sitio',i1,i2,i3,i4, 'tiene enlaces', &
+            &bond_x(i1,i2,i3,i4),bond_y(i1,i2,i3,i4), bond_z(i1,i2,i3,i4),&
+            &bond_w(i1,i2,i3,i4)
+          end do
+        end do
+      end do
+    end do
   !--- Initialise union-find structure ---
     label(:,:,:,:) = 0
     do i1=1,L*L*L*L
@@ -173,83 +184,83 @@ subroutine cluster(phi)
 
   !--- Periodic boundary unions (wrap-around edges) ---
   ! x wrap: face i=L bonded to face i=1
-  do i2=1,L
-    do i3=1,L
-      do i4=1,L
-        if (bond_x(L,i2,i3,i4)) then
-          call union(label(1,i2,i3,i4),label(L,i2,i3,i4),parent)
-        end if
-      end do
-    end do
-  end do
-
-  ! y wrap
-  do i1=1,L
-    do i3=1,L
-      do i4=1,L
-        if (bond_y(i1,L,i3,i4)) then 
-          call union(label(i1,1,i3,i4),label(i1,L,i3,i4),parent)
-        end if
-      end do
-    end do
-  end do
-
-  ! z wrap
-  do i1=1,L
-    do i2=1,L
-      do i4=1,L
-        if (bond_z(i1,i2,L,i4)) then 
-          call union(label(i1,i2,1,i4),label(i1,i2,L,i4),parent)
-        end if
-      end do
-    end do
-  end do
-
-  ! w wrap
-  do i1=1,L
     do i2=1,L
       do i3=1,L
-        if (bond_w(i1,i2,i3,L)) then
-          call union(label(i1,i2,i3,1),label(i1,i2,i3,L),parent)
-        end if
-      end do
-    end do
-  end do
-
-  !--- Flatten all labels to their root ---
-  do i1=1,L  
-    do i2=1,L  
-      do i3=1,L  
         do i4=1,L
-          label(i1,i2,i3,i4)=find(label(i1,i2,i3,i4),parent)
-        end do
-      end do 
-    end do 
-  end do
-
-  !--- Randomly decide whether to flip each cluster ---
-  allocate(flip_cluster(next_label))
-  flip_cluster(:) = .false.
-  do i1 = 1, next_label - 1
-    !call random_number(r)
-    r=0.1_dp
-    flip_cluster(i1) = (r < 0.5_dp)
-  end do
-
-  !--- Apply flips ---
-  do i1=1,L 
-    do i2=1,L  
-      do i3=1,L  
-        do i4=1,L
-          if (flip_cluster(label(i1,i2,i3,i4))) then
-            phi(i1,i2,i3,i4) = -phi(i1,i2,i3,i4)
+          if (bond_x(L,i2,i3,i4)) then
+            call union(label(1,i2,i3,i4),label(L,i2,i3,i4),parent)
           end if
         end do
       end do
-    end do 
-  end do
+    end do
 
-  deallocate(flip_cluster)
+  ! y wrap
+    do i1=1,L
+      do i3=1,L
+        do i4=1,L
+          if (bond_y(i1,L,i3,i4)) then
+            call union(label(i1,1,i3,i4),label(i1,L,i3,i4),parent)
+          end if
+        end do
+      end do
+    end do
+
+  ! z wrap
+    do i1=1,L
+      do i2=1,L
+        do i4=1,L
+          if (bond_z(i1,i2,L,i4)) then
+            call union(label(i1,i2,1,i4),label(i1,i2,L,i4),parent)
+          end if
+        end do
+      end do
+    end do
+
+  ! w wrap
+    do i1=1,L
+      do i2=1,L
+        do i3=1,L
+          if (bond_w(i1,i2,i3,L)) then
+            call union(label(i1,i2,i3,1),label(i1,i2,i3,L),parent)
+          end if
+        end do
+      end do
+    end do
+
+  !--- Flatten all labels to their root ---
+    do i1=1,L
+      do i2=1,L
+        do i3=1,L
+          do i4=1,L
+            label(i1,i2,i3,i4)=find(label(i1,i2,i3,i4),parent)
+          end do
+        end do
+      end do
+    end do
+
+  !--- Randomly decide whether to flip each cluster ---
+    allocate(flip_cluster(next_label))
+    flip_cluster(:) = .false.
+    do i1 = 1, next_label - 1
+      !call random_number(r)
+      r=0.1_dp
+      flip_cluster(i1) = (r < 0.5_dp)
+    end do
+
+  !--- Apply flips ---
+    do i1=1,L
+      do i2=1,L
+        do i3=1,L
+          do i4=1,L
+            if (flip_cluster(label(i1,i2,i3,i4))) then
+              phi(i1,i2,i3,i4) = -phi(i1,i2,i3,i4)
+            end if
+          end do
+        end do
+      end do
+    end do
+
+    deallocate(flip_cluster)
 
 end subroutine cluster
   
