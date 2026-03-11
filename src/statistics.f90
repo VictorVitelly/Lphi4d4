@@ -103,7 +103,7 @@ contains
   do i=1,montecarlos
     call metropolis(m02,phi)
   end do
-  end
+  end subroutine cycles
 
   !ERRORS
 
