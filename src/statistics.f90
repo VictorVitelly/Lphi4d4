@@ -295,6 +295,7 @@ contains
   do i=1,montecarlos
     call metropolis(m02,phi)
   end do
+  call cluster(phi)
   end subroutine cycles
 
   !ERRORS

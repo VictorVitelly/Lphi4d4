@@ -1,7 +1,7 @@
 program test
   use iso_fortran_env, only : dp => real64, i32 => int32
   implicit none
-    integer(i32), parameter :: L=2
+    integer(i32), parameter :: L=3
     real(dp) :: phi(L,L,L,L)
     
     call hot_start(phi,0.5_dp)
@@ -119,9 +119,9 @@ subroutine cluster(phi)
       do i2=1,L
         do i3=1,L
           do i4=1,L
-            write(*,*) 'El sitio',i1,i2,i3,i4, 'tiene enlaces', &
-            &bond_x(i1,i2,i3,i4),bond_y(i1,i2,i3,i4), bond_z(i1,i2,i3,i4),&
-            &bond_w(i1,i2,i3,i4)
+            write(*,*) 'El sitio',i1,i2,i3,i4, &
+            &'tiene enlaces', bond_x(i1,i2,i3,i4),bond_y(i1,i2,i3,i4), &
+            &bond_z(i1,i2,i3,i4),bond_w(i1,i2,i3,i4)
           end do
         end do
       end do
@@ -252,6 +252,7 @@ subroutine cluster(phi)
       do i2=1,L
         do i3=1,L
           do i4=1,L
+            write(*,*) 'El sitio',i1,i2,i3,i4, 'tiene label', label(i1,i2,i3,i4)
             if (flip_cluster(label(i1,i2,i3,i4))) then
               phi(i1,i2,i3,i4) = -phi(i1,i2,i3,i4)
             end if

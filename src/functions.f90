@@ -22,23 +22,23 @@ module functions
     lagrangian=lag1+lag2+lag3+lag4+lag5
   end function lagrangian
 
-  function action(m02,phi)
+  function S(m02,phi)
     real(dp), intent(in) :: m02
     real(dp), dimension(:,:,:,:), intent(in) :: phi
     integer(i32) :: i1,i2,i3,i4
-    real(dp) :: action
-    action=0._dp
+    real(dp) :: S
+    S=0._dp
     do i1=1,L
       do i2=1,L
         do i3=1,L
           do i4=1,L
-            action=action+lagrangian(m02,phi,i1,i2,i3,i4)
+            S=S+lagrangian(m02,phi,i1,i2,i3,i4)
           end do
         end do
       end do
     end do
-    action=0.5_dp*action
-  end function action
+    S=0.5_dp*S
+  end function S
 
   function DeltaS(m02,phi,i1,i2,i3,i4,phi2)
     real(dp), intent(in) :: m02
@@ -72,6 +72,27 @@ module functions
       end do
     end do
   end function
+
+  recursive function find(x,parent) result(out)
+    integer(i32), intent(in) :: x
+    integer(i32), intent(inout) :: parent(:)
+    integer(i32) :: out
+    if(parent(x) /= x) then
+      parent(x)=find(parent(x),parent )
+    end if
+    out=parent(x)
+  end function find
+
+  subroutine union(x,y,parent)
+    integer(i32),intent(in) :: x,y
+    integer(i32),intent(inout) :: parent(:)
+    integer :: root_x, root_y
+    root_x=find(x,parent)
+    root_y=find(y,parent)
+    if (root_x /= root_y) then
+      parent(root_y)=root_x
+    end if
+  end subroutine union
 
 
 end module functions
