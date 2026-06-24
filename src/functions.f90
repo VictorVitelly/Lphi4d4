@@ -4,7 +4,7 @@ module functions
     use arrays
     implicit none
 
-    contains
+  contains
 
 
   function lagrangian(m02,phi,i1,i2,i3,i4)

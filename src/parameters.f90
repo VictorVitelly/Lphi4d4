@@ -2,17 +2,19 @@ module parameters
 
     use iso_fortran_env, only : dp => real64, i32 => int32
     implicit none
+    real(dp), parameter :: PI=4._dp*Atan(1.0_dp)
+    
     integer(i32) :: L,thermalization,eachsweep
-    real(dp) :: lamb0
-
-    integer(i32) :: Nmsrs=30, Nmsrs2=120
+    real(dp) :: lamb0,m02
+    
+    integer(i32) :: Nmsrs=200, Nmsrs2=120
     real(dp) :: dphi=0.4_dp, hotphi=1._dp
     integer(i32), parameter :: Mbin(5)=(/4,5,10,15,20/)
 
     character(100) :: input_file
     real :: starting,ending
 
-    namelist /input_parameters/ L, thermalization, eachsweep, lamb0
+    namelist /input_parameters/ L, thermalization, eachsweep, lamb0, m02
 
   contains
 

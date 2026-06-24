@@ -1,7 +1,7 @@
 &input_parameters
 L = 4,
 thermalization = 5000,
-eachsweep = 20,
-lamb0 = 2.,
+eachsweep = 18,
+lamb0 = 1,
 m02=-1,
 /

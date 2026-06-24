@@ -12,8 +12,10 @@ program main
   call cpu_time(starting)
   call init_vecs()
   !call thermalize(-2._dp,1)
-  !call acceptance_rate(-3._dp,-0.5_dp,11)
-  call vary_m0(-4._dp,2._dp,13)
+  !call acceptance_rate(-1.0_dp,0.0_dp,21)
+  !call autocorrelation(m02,300,4)
+  call vary_m04(-1.4_dp,-0.6_dp,11)
+
 
   call cpu_time(ending)
   write(*,*) "Elapsed time: ", (ending-starting), " s"
